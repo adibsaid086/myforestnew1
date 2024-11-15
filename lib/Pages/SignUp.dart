@@ -1,17 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:myforestnew/Pages/Login.dart';
+import 'package:myforestnew/Resources/auth_method.dart';
+import 'package:myforestnew/Resources/utils.dart';
+import 'package:myforestnew/Widgets/text_field_input.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
+
+  @override
+  _SignupScreen createState() => _SignupScreen();
+}
+
+class _SignupScreen extends State<SignUp> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _usernameController.dispose();
+  }
+
+  void signUpUser() async{
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      //username: _usernameController.text
+    );
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    if(res != 'success') {
+      showSnackBar(res, context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Background color to match the design
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Tree icon or logo (placeholder for now)
             Center(
               child: Image.asset(
                 'assets/myforestlogo.jpg',
@@ -19,7 +59,6 @@ class SignUp extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            // Title
             Text(
               'MyForest',
               style: TextStyle(
@@ -29,52 +68,41 @@ class SignUp extends StatelessWidget {
               ),
             ),
             Text(
-              'Sign In',
+              'Sign Up',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.white70,
               ),
             ),
             SizedBox(height: 40),
-            // Username input field
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[300],
-                hintText: 'Username',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              ),
+            // Email input field with rounded corners
+            TextFieldInput(
+              hintText: 'Email',
+              textInputType: TextInputType.text,
+              textEditingController: _emailController,
+              borderRadius: 15.0,
             ),
-            SizedBox(height: 20),
-            // Email input field
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[300],
-                hintText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              ),
+            const SizedBox(height: 20),
+            // Password input field with rounded corners
+            TextFieldInput(
+              hintText: 'Password',
+              textInputType: TextInputType.text,
+              textEditingController: _passwordController,
+              borderRadius: 15.0,
             ),
             SizedBox(height: 30),
-            // Login button (arrow icon)
             ElevatedButton(
-              onPressed: () {
-                print('Login button pressed');
-              },
+              onPressed: signUpUser,
               style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 backgroundColor: Colors.white,
               ),
-              child: Text(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : const Text(
                 "Sign Up",
                 style: TextStyle(color: Colors.black),
               ),
@@ -96,7 +124,7 @@ class SignUp extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    'Sign In',
+                    'Log In',
                     style: TextStyle(color: Colors.lightBlueAccent),
                   ),
                 ),
@@ -108,3 +136,4 @@ class SignUp extends StatelessWidget {
     );
   }
 }
+

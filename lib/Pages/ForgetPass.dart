@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myforestnew/Pages/Login.dart';
+import 'package:myforestnew/Resources/utils.dart';
 
-class forgetPass extends StatelessWidget {
+class ForgetPass extends StatelessWidget {
+  final TextEditingController _emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Background color to match the design
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -19,7 +23,6 @@ class forgetPass extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Title
             const Text(
               'MyForest',
               style: TextStyle(
@@ -29,44 +32,32 @@ class forgetPass extends StatelessWidget {
               ),
             ),
             const Text(
-              'Sign In',
+              'Reset Password',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 15,
                 color: Colors.white70,
               ),
             ),
             const SizedBox(height: 40),
-            // Username input field
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[300],
-                hintText: 'Username',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-            ),
-            const SizedBox(height: 20),
             // Email input field
             TextField(
+              controller: _emailController,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.grey[300],
+                fillColor: Colors.white,
                 hintText: 'Email',
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                contentPadding: const EdgeInsets.symmetric(vertical: 18 ,horizontal: 16),
               ),
             ),
             const SizedBox(height: 30),
-            // Login button (arrow icon)
+            // Reset Password button
             ElevatedButton(
               onPressed: () {
+                _resetPassword(context);
               },
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
@@ -106,5 +97,22 @@ class forgetPass extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Function to handle password reset
+  Future<void> _resetPassword(BuildContext context) async {
+    final String email = _emailController.text.trim();
+
+    if (email.isEmpty) {
+      showSnackBar("Please enter your email", context);
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      showSnackBar("Password reset email sent!", context);
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
   }
 }

@@ -2,8 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:myforestnew/Pages/ForgetPass.dart';
 import 'package:myforestnew/Pages/HomPage.dart';
 import 'package:myforestnew/Pages/SignUp.dart';
+import 'package:myforestnew/Resources/auth_method.dart';
+import 'package:myforestnew/Resources/utils.dart';
+import 'package:myforestnew/Widgets/text_field_input.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+
+  @override
+  State<LoginPage> createState() => __LogininScreenState();
+}
+
+class __LogininScreenState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
+  void loginUser() async{
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().loginUser(
+        email: _emailController.text,
+        password: _passwordController.text
+    );
+
+    if(res == "success") {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } else {
+      //
+      showSnackBar(res, context);
+
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,33 +83,18 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 40),
-            // Username input field
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[300],
-                hintText: 'Username',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              ),
+            // Email input field
+            TextFieldInput(
+              hintText: 'Email',
+              textInputType: TextInputType.text,
+              textEditingController: _emailController,
             ),
             SizedBox(height: 20),
             // Password input field
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[300],
-                hintText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              ),
-              obscureText: true,
+            TextFieldInput(
+              hintText: 'Password',
+              textInputType: TextInputType.text,
+              textEditingController: _passwordController,
             ),
             SizedBox(height: 10),
             // Forgot password link
@@ -74,7 +104,7 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => forgetPass()
+                      builder: (context) => ForgetPass(),
                     ),
                   );
                 },
@@ -87,13 +117,7 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 30),
             // Login button (arrow icon)
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                );
-              },
+              onPressed: loginUser,
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
                 padding: EdgeInsets.all(20),
