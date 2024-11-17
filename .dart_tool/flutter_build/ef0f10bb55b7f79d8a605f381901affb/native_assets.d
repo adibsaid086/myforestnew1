@@ -1,0 +1,1 @@
+ C:\\project\\myforestnew\\.dart_tool\\flutter_build\\ef0f10bb55b7f79d8a605f381901affb\\native_assets.yaml: 
