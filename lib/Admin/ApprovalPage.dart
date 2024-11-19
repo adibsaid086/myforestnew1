@@ -45,6 +45,20 @@ class _PermitsListPageState extends State<PermitsListPage> {
     }
   }
 
+  /// Update permit status in Firestore
+  Future<void> updatePermitStatus(String permitId, String status) async {
+    try {
+      await FirebaseFirestore.instance.collection('permits').doc(permitId).update({
+        'status': status,
+      });
+
+      // Refresh data after updating
+      fetchPermits();
+    } catch (e) {
+      print("Error updating permit status: $e");
+    }
+  }
+
   /// Filter permits based on search query
   void filterSearch(String query) {
     setState(() {
@@ -157,7 +171,9 @@ class _PermitsListPageState extends State<PermitsListPage> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => detailApplication(documentId: permit['id']),
+                                      builder: (context) => detailApplication(
+                                        documentId: permit['id'],
+                                      ),
                                     ),
                                   );
                                 },
@@ -174,14 +190,14 @@ class _PermitsListPageState extends State<PermitsListPage> {
                                 ),
                               ),
                               Text(
-                                "Date: ${permit['date']}",
+                                "Location: ${permit['mountain']}",
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 14.0,
                                 ),
                               ),
                               Text(
-                                "Guide: ${permit['guide']}",
+                                "Date: ${permit['date']}",
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 14.0,
@@ -197,13 +213,13 @@ class _PermitsListPageState extends State<PermitsListPage> {
                             IconButton(
                               icon: Icon(Icons.close, color: Colors.red),
                               onPressed: () {
-                                // Handle reject action
+                                updatePermitStatus(permit['id'], "rejected");
                               },
                             ),
                             IconButton(
                               icon: Icon(Icons.check, color: Colors.green),
                               onPressed: () {
-                                // Handle accept action
+                                updatePermitStatus(permit['id'], "approved");
                               },
                             ),
                           ],
