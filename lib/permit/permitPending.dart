@@ -73,7 +73,7 @@ class _PermitApplicationScreenState extends State<PermitApplicationScreen> {
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: permitData == null
             ? Center(child: CircularProgressIndicator())
@@ -85,7 +85,9 @@ class _PermitApplicationScreenState extends State<PermitApplicationScreen> {
             : Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            StepIndicator(), // Top indicator
+            StepIndicator(
+              status: permitData!['status'] ?? 'pending',
+            ),
             SizedBox(height: 20),
             Align(
               alignment: Alignment.topCenter,
@@ -95,19 +97,33 @@ class _PermitApplicationScreenState extends State<PermitApplicationScreen> {
                     : permitData!['status'] == "rejected"
                     ? 'Rejected'
                     : 'Pending',
-                date: permitData!['date'],
+                date: permitData!['date'] ?? 'N/A',
               ),
             ),
             SizedBox(height: 20),
             Align(
               alignment: Alignment.topCenter,
               child: ApplicationDetails(
-                mountain: permitData!['mountain'],
-                date: permitData!['date'],
-                guide: permitData!['guide'],
-                participants: permitData!['participants'],
+                mountain: permitData!['mountain'] ?? 'Unknown',
+                date: permitData!['date'] ?? 'N/A',
+                guide: permitData!['guide'] ?? 'N/A',
+                participants: permitData!['participants'] ?? [],
               ),
             ),
+            if (permitData!['status'] == "approved") ...[
+              SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {
+                  // Implement download e-permit logic
+                },
+                child: Text('Download E-Permit'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 40, vertical: 15),
+                  backgroundColor: Colors.blueAccent,
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -151,14 +167,20 @@ class StatusBox extends StatelessWidget {
 }
 
 class StepIndicator extends StatelessWidget {
+  final String status;
+
+  StepIndicator({required this.status});
+
   @override
   Widget build(BuildContext context) {
+    final isFinalized = status == "approved" || status == "rejected"; // Both statuses have the same behavior.
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         CircleAvatar(
           radius: 15,
-          backgroundColor: Colors.grey[800],
+          backgroundColor: isFinalized ? Colors.grey[800] : Colors.grey[800],
           child: Text(
             '1',
             style: TextStyle(color: Colors.white),
@@ -169,7 +191,7 @@ class StepIndicator extends StatelessWidget {
         SizedBox(width: 10),
         CircleAvatar(
           radius: 15,
-          backgroundColor: Colors.grey,
+          backgroundColor: isFinalized ? Colors.grey[800] : Colors.grey,
           child: Text(
             '2',
             style: TextStyle(color: Colors.white),
@@ -179,6 +201,8 @@ class StepIndicator extends StatelessWidget {
     );
   }
 }
+
+
 
 class ApplicationDetails extends StatelessWidget {
   final String mountain;
@@ -235,6 +259,7 @@ class ApplicationDetails extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 5),
                 RichText(
                   text: TextSpan(
                     children: [
@@ -279,11 +304,11 @@ class ApplicationDetails extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 5),
+                SizedBox(height: 10),
+                Divider(color: Colors.grey),
               ],
             );
           }).toList(),
-          Divider(color: Colors.grey),
           SizedBox(height: 5),
         ],
       ),

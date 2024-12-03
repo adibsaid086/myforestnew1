@@ -44,6 +44,8 @@ class _PermitApplicationState extends State<Permit> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      print("Form is valid, submitting...");
+
       final String date = _dateController.text.trim();
       final String mountain = _selectedMountain!;
       final String guide = _guideNumberController.text.trim();
@@ -64,10 +66,60 @@ class _PermitApplicationState extends State<Permit> {
         participants: participantData,
       );
 
-      // Show confirmation or error message
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response)));
+      print("Response from API: $response");
+
+      // Show the submission popup
+      _showSubmissionPopup();
+
+      // Reset the form
+      _resetForm();
+    } else {
+      print("Form validation failed");
     }
   }
+
+  void _showSubmissionPopup() {
+    Future.delayed(Duration(milliseconds: 200), () {
+      showDialog(
+        context: context,
+        barrierDismissible: false, // Prevent dismissing by tapping outside
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Submission Successful'),
+            content: Text('Your application has been submitted successfully.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+
+  void _resetForm() {
+    setState(() {
+      // Clear controllers
+      _dateController.clear();
+      _guideNumberController.clear();
+      _selectedMountain = null;
+
+      // Clear and reset participants
+      for (var participant in _participants) {
+        participant['name']!.clear();
+        participant['phone']!.clear();
+        participant['emergency']!.clear();
+      }
+      _participants = [];
+      _addParticipant(); // Add a fresh participant field
+    });
+  }
+
 
   @override
   void dispose() {
@@ -234,6 +286,8 @@ class _PermitApplicationState extends State<Permit> {
                 onPressed: _submitForm,
                 child: Text("Submit"),
               ),
+
+              SizedBox(height: 85),
             ],
           ),
         ),

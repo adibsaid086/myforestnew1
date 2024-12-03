@@ -77,13 +77,7 @@ class _SavedPageState extends State<SavedPage> with SingleTickerProviderStateMix
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text('Saved', style: TextStyle(color: Colors.white)), // AppBar text color
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              Navigator.of(context).pop(); // Navigates back when pressed
-            },
-          ),
+          title: Text('Saved', style: TextStyle(color: Colors.white)),
           bottom: TabBar(
             controller: _tabController,
             tabs: [
@@ -118,8 +112,11 @@ class _SavedPageState extends State<SavedPage> with SingleTickerProviderStateMix
                 Expanded(
                   child: ListView.builder(
                     padding: EdgeInsets.all(8.0),
-                    itemCount: filteredListItems.length,
+                    itemCount: filteredListItems.length + 1, // Add 1 for SizedBox
                     itemBuilder: (context, index) {
+                      if (index == filteredListItems.length) {
+                        return SizedBox(height: 85.0); // Add some space at the bottom
+                      }
                       var item = filteredListItems[index];
                       return buildImageCard(
                         item['title']!,
@@ -129,6 +126,7 @@ class _SavedPageState extends State<SavedPage> with SingleTickerProviderStateMix
                     },
                   ),
                 ),
+
               ],
             ),
             Column(
@@ -154,8 +152,11 @@ class _SavedPageState extends State<SavedPage> with SingleTickerProviderStateMix
                 Expanded(
                   child: ListView.builder(
                     padding: EdgeInsets.all(8.0),
-                    itemCount: filteredDownloadItems.length,
+                    itemCount: filteredDownloadItems.length + 1, // Add 1 for SizedBox
                     itemBuilder: (context, index) {
+                      if (index == filteredDownloadItems.length) {
+                        return SizedBox(height: 85.0); // Add some space at the bottom
+                      }
                       var item = filteredDownloadItems[index];
                       return buildDownloadCard(
                         item['title']!,
@@ -169,81 +170,9 @@ class _SavedPageState extends State<SavedPage> with SingleTickerProviderStateMix
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.black,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.grey,
-          type: BottomNavigationBarType.fixed,
-          items: [
-            _buildBottomNavigationBarItem(
-              'assets/icon/home.jpg', // Replace with your custom icon path
-                  () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-            ),
-            _buildBottomNavigationBarItem(
-              'assets/icon/permit.png',
-                  () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Permit()),
-                );
-              },
-            ),
-            _buildBottomNavigationBarItem(
-              'assets/icon/navi.png',
-                  () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Permit()),
-                );
-              },
-            ),
-            _buildBottomNavigationBarItem(
-              'assets/icon/save.png',
-                  () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SavedPage()),
-                );
-              },
-            ),
-            _buildBottomNavigationBarItem(
-              'assets/icon/profile.png',
-                  () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
-
-  // Helper function to build BottomNavigationBarItem with tap gesture
-  BottomNavigationBarItem _buildBottomNavigationBarItem(
-      String assetPath, VoidCallback onTap) {
-    return BottomNavigationBarItem(
-      icon: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.only(top: 3.0),
-          child: Image.asset(
-            assetPath, // Use provided asset path
-            height: 40,
-          ),
-        ),
-      ),
-      label: '', // Empty label for custom icons
-    );
-  }
-
   Widget buildImageCard(String title, String distance, String imagePath) {
     return Card(
       color: Colors.grey[850],
@@ -296,6 +225,3 @@ class _SavedPageState extends State<SavedPage> with SingleTickerProviderStateMix
     );
   }
 }
-
-
-
