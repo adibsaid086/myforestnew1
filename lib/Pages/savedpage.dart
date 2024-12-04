@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SavedPage extends StatefulWidget {
@@ -7,217 +9,221 @@ class SavedPage extends StatefulWidget {
 
 class _SavedPageState extends State<SavedPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  List<Map<String, String>> listItems = [
-    {'title': 'Bukit Guling Ayam', 'distance': '1KM', 'image': 'assets/ayam/ayam2.jpg'},
-    {'title': 'Another Place', 'distance': '5KM', 'image': 'assets/ayam/ayam1.jpg'},
-  ];
-
-  List<Map<String, String>> downloadItems = [
-    {'title': 'Bukit Lagong', 'distance': '4.3KM', 'image': 'assets/ayam/ayam1.jpg'},
-    {'title': 'Mount Nuang', 'distance': '17.9KM', 'image': 'assets/ayam/ayam2.jpg'},
-  ];
-
-  TextEditingController listSearchController = TextEditingController();
-  TextEditingController downloadSearchController = TextEditingController();
-
-  List<Map<String, String>> filteredListItems = [];
-  List<Map<String, String>> filteredDownloadItems = [];
+  int _currentImageIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
-    filteredListItems = listItems;
-    filteredDownloadItems = downloadItems;
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    listSearchController.dispose();
-    downloadSearchController.dispose();
     super.dispose();
-  }
-
-  void searchList(String query) {
-    setState(() {
-      filteredListItems = listItems.where((item) {
-        return item['title']!.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    });
-  }
-
-  void searchDownload(String query) {
-    setState(() {
-      filteredDownloadItems = downloadItems.where((item) {
-        return item['title']!.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.dark, // Black/dark theme
-        primaryColor: Colors.white, // Set primary color to white
-        tabBarTheme: TabBarTheme(
-          labelColor: Colors.white, // Tab label text color
-          unselectedLabelColor: Colors.grey, // Unselected tab text color
-          indicator: UnderlineTabIndicator(
-            borderSide: BorderSide(color: Colors.white, width: 2), // Tab underline in white
-          ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        title: Text(
+          'Saved',
+          style: TextStyle(color: Colors.white),
         ),
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: Text('Saved', style: TextStyle(color: Colors.white)),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(text: 'Lists'),
-              Tab(text: 'Download'),
-            ],
-          ),
-        ),
-        body: TabBarView(
+        bottom: TabBar(
           controller: _tabController,
-          children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: listSearchController,
-                    decoration: InputDecoration(
-                      labelText: 'Search Lists',
-                      labelStyle: TextStyle(color: Colors.white),
-                      prefixIcon: Icon(Icons.search, color: Colors.white),
-                      filled: true,
-                      fillColor: Colors.grey[800],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    onChanged: searchList,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(8.0),
-                    itemCount: filteredListItems.length + 1, // Add 1 for SizedBox
-                    itemBuilder: (context, index) {
-                      if (index == filteredListItems.length) {
-                        return SizedBox(height: 85.0); // Add some space at the bottom
-                      }
-                      var item = filteredListItems[index];
-                      return buildImageCard(
-                        item['title']!,
-                        item['distance']!,
-                        item['image']!,
-                      );
-                    },
-                  ),
-                ),
-
-              ],
-            ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: downloadSearchController,
-                    decoration: InputDecoration(
-                      labelText: 'Search Downloads',
-                      labelStyle: TextStyle(color: Colors.white),
-                      prefixIcon: Icon(Icons.search, color: Colors.white),
-                      filled: true,
-                      fillColor: Colors.grey[800],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                    ),
-                    onChanged: searchDownload,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(8.0),
-                    itemCount: filteredDownloadItems.length + 1, // Add 1 for SizedBox
-                    itemBuilder: (context, index) {
-                      if (index == filteredDownloadItems.length) {
-                        return SizedBox(height: 85.0); // Add some space at the bottom
-                      }
-                      var item = filteredDownloadItems[index];
-                      return buildDownloadCard(
-                        item['title']!,
-                        item['distance']!,
-                        item['image']!,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
+          tabs: [
+            Tab(icon: Icon(Icons.list), text: "List"),
+            Tab(icon: Icon(Icons.download), text: "Download"),
           ],
         ),
       ),
-    );
-  }
-  Widget buildImageCard(String title, String distance, String imagePath) {
-    return Card(
-      color: Colors.grey[850],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          Image.asset(imagePath),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: Text(
-              distance,
-              style: TextStyle(color: Colors.grey[400]),
-            ),
-          ),
+          _buildListView(),
+          _buildDownloadView(),
         ],
       ),
     );
   }
 
-  Widget buildDownloadCard(String title, String distance, String mapPath) {
-    return Card(
-      color: Colors.grey[850],
+  Widget _buildListView() {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return Center(
+        child: Text(
+          'Please log in to view saved mountains.',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('saved_mounts')
+          .where('userId', isEqualTo: user.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: TextStyle(color: Colors.white),
+            ),
+          );
+        }
+
+        final savedMountains = snapshot.data?.docs ?? [];
+
+        if (savedMountains.isEmpty) {
+          return Center(
+            child: Text(
+              'No saved mountains yet.',
+              style: TextStyle(color: Colors.white),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: EdgeInsets.all(16.0),
+          itemCount: savedMountains.length + 1, // Add 1 for the SizedBox
+          itemBuilder: (context, index) {
+            if (index == savedMountains.length) {
+              return SizedBox(height: 65); // Add space at the bottom
+            }
+
+            final mountain = savedMountains[index].data() as Map<String, dynamic>;
+            return _buildMountainCard(mountain);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildMountainCard(Map<String, dynamic> mountain) {
+    final String name = mountain['name'] ?? 'Unknown Mountain';
+    final String distance = mountain['distance'] ?? 'N/A';
+    final String description = mountain['description'] ?? 'No description available';
+    final List<String> images = (mountain['images'] as List<dynamic>?)?.cast<String>() ?? [];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
-          Image.asset(mapPath),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          Container(
+            height: 250,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                images.isNotEmpty
+                    ? PageView.builder(
+                  itemCount: images.length,
+                  onPageChanged: (pageIndex) {
+                    setState(() {
+                      _currentImageIndex = pageIndex;
+                    });
+                  },
+                  itemBuilder: (context, pageIndex) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.asset(
+                        images[pageIndex],
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Text(
+                              'Image not found',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                )
+                    : Center(
+                  child: Text(
+                    'No images available',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                if (images.isNotEmpty)
+                  Positioned(
+                    bottom: 10,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        images.length,
+                            (dotIndex) => buildDot(dotIndex, _currentImageIndex),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: Text(
-              distance,
-              style: TextStyle(color: Colors.grey[400]),
-            ),
+          SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                name,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                distance,
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
+          Text(
+            description,
+            style: TextStyle(color: Colors.grey),
+          ),
+          SizedBox(height: 5),
         ],
+      ),
+
+    );
+
+  }
+
+
+  Widget _buildDownloadView() {
+    return Center(
+      child: Text(
+        "Download Section",
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  Widget buildDot(int index, int currentIndex) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      height: 8.0,
+      width: currentIndex == index ? 16.0 : 8.0,
+      decoration: BoxDecoration(
+        color: currentIndex == index ? Colors.white : Colors.grey,
+        borderRadius: BorderRadius.circular(8),
       ),
     );
   }

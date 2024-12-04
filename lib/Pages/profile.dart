@@ -36,12 +36,12 @@ class _ProfilePageState extends State<ProfilePage> {
           Icon(
             icon,
             color: isSelected ? Colors.black87 : Colors.black45,
-            size: 35,
+            size: 30,
           ),
           if (isSelected)
             Container(
-              margin: EdgeInsets.only(top: 4),
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              margin: EdgeInsets.only(top: 2),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Color(0xFF81b1ce),
                 borderRadius: BorderRadius.circular(30),
@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 label,
                 style: TextStyle(
                   color: Color(0xFF000035),
-                  fontSize: 12,
+                  fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -208,10 +208,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             Positioned(
               bottom: 8,
-              left: 6,
-              right: 6,
+              left: 24,
+              right: 24,
               child: Container(
-                height: 80,
+                height: 70,
                 decoration: BoxDecoration(
                   color: Color(0xFFaad6ec),
                   borderRadius: BorderRadius.circular(50),

@@ -129,12 +129,12 @@ class _HomePageState extends State<HomePage> {
           Icon(
             icon,
             color: isSelected ? Colors.black87 : Colors.black45,
-            size: 35,
+            size: 30,
           ),
           if (isSelected)
             Container(
-              margin: EdgeInsets.only(top: 4),
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              margin: EdgeInsets.only(top: 2),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Color(0xFF81b1ce),
                 borderRadius: BorderRadius.circular(30),
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                 label,
                 style: TextStyle(
                   color: Color(0xFF000035),
-                  fontSize: 12,
+                  fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -165,26 +165,34 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       appBar: _currentIndex == 4
           ? AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: TextField(
-          controller: _searchController,
-          style: TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            hintText: 'Search for a mountain',
-            hintStyle: TextStyle(color: Colors.white70),
-            filled: true,
-            fillColor: Colors.grey[800],
-            prefixIcon: Icon(Icons.search, color: Colors.white),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none,
+             backgroundColor: Colors.black,
+             elevation: 0,
+              automaticallyImplyLeading: false,
+               title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                 mainAxisSize: MainAxisSize.min,
+                children: [
+                   TextField(
+                     controller: _searchController,
+                     style: TextStyle(color: Colors.white),
+                     decoration: InputDecoration(
+                     hintText: 'Search for a mountain',
+                      hintStyle: TextStyle(color: Colors.white70),
+                      filled: true,
+                      fillColor: Colors.grey[800],
+                    prefixIcon: Icon(Icons.search, color: Colors.white),
+                     border: OutlineInputBorder(
+                     borderRadius: BorderRadius.circular(20),
+                     borderSide: BorderSide.none,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
+        toolbarHeight: 90, // Adjust this to control the AppBar's overall height
       )
-          : null,
+        : null,
+
       body: Stack(
         children: [
           PageView(
@@ -198,7 +206,6 @@ class _HomePageState extends State<HomePage> {
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: 16.0),
                     Column(
                       children: [
                         Row(
@@ -236,16 +243,16 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         images.isNotEmpty
                                             ? PageView.builder(
-                                          itemCount: images.length,
-                                          onPageChanged: (pageIndex) {
-                                            setState(() {
+                                             itemCount: images.length,
+                                              onPageChanged: (pageIndex) {
+                                                setState(() {
                                               _currentImageIndex[index] = pageIndex;
-                                            });
-                                          },
-                                          itemBuilder: (context, pageIndex) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
+                                             });
+                                            },
+                                             itemBuilder: (context, pageIndex) {
+                                               return GestureDetector(
+                                                 onTap: () {
+                                                  Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
@@ -253,12 +260,12 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 );
                                               },
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(10.0),
-                                                child: Image.asset(
-                                                  images[pageIndex],
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error, stackTrace) {
+                                                 child: ClipRRect(
+                                                 borderRadius: BorderRadius.circular(10.0),
+                                                   child: Image.asset(
+                                                     images[pageIndex],
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) {
                                                     return Center(
                                                       child: Text(
                                                         'Image not found',
@@ -272,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                                           },
                                         )
                                             : Center(
-                                          child: Text(
+                                              child: Text(
                                             'No images available',
                                             style: TextStyle(color: Colors.grey),
                                           ),
@@ -292,20 +299,30 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   SizedBox(height: 10),
-                                  Text(
-                                    name,
-                                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        name,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        distance,
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    distance,
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  SizedBox(height: 10),
                                   Text(
                                     description,
                                     style: TextStyle(color: Colors.grey),
                                   ),
-                                  SizedBox(height: 16),
+                                  SizedBox(height: 5),
                                 ],
                               ),
                             );
@@ -313,6 +330,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 70.0),
                   ],
                 ),
               ),
@@ -320,10 +338,10 @@ class _HomePageState extends State<HomePage> {
           ),
           Positioned(
             bottom: 8,
-            left: 6,
-            right: 6,
+            left: 24,
+            right: 24,
             child: Container(
-              height: 80,
+              height: 70,
               decoration: BoxDecoration(
                 color: Color(0xFFaad6ec),
                 borderRadius: BorderRadius.circular(50),

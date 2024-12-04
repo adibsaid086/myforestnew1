@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:myforestnew/permit/Permit.dart';
-import 'package:myforestnew/Pages/savedpage.dart';
 import 'package:myforestnew/mountnuang/Imagenuang.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:myforestnew/mountnuang/Nuangloc.dart';
 import 'package:myforestnew/mountnuang/forecast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MountNuangPage extends StatefulWidget {
   @override
@@ -33,8 +34,33 @@ class _MountNuangPageState extends State<MountNuangPage> {
       _showPopup(context);
     });
     fetchWeatherData();
+    _checkIfSaved();
   }
+  bool isSaved = false;
+  String? savedDocumentId;
+  Future<void> _checkIfSaved() async {
+    final user = FirebaseAuth.instance.currentUser;
 
+    if (user != null) {
+      try {
+        // Query Firestore to see if the mount is already saved by the user
+        final query = await FirebaseFirestore.instance
+            .collection('saved_mounts')
+            .where('name', isEqualTo: 'Mount Nuang') // Match the mount name
+            .where('userId', isEqualTo: user.uid) // Match the current user
+            .get();
+
+        if (query.docs.isNotEmpty) {
+          setState(() {
+            isSaved = true;
+            savedDocumentId = query.docs.first.id;
+          });
+        }
+      } catch (e) {
+        print('Error checking if mount is saved: $e');
+      }
+    }
+  }
   Future<void> fetchWeatherData() async {
     const String apiKey = '8f5b43dd3e53fb197df8ed5a8cae93c5';
     const String location = 'Hulu Langat';
@@ -149,14 +175,69 @@ class _MountNuangPageState extends State<MountNuangPage> {
               ),
               child: IconButton(
                 icon: Icon(
-                    Icons.bookmark_outline, color: Colors.white, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SavedPage(),
-                    ),
-                  );
+                  isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () async {
+                  final user = FirebaseAuth.instance.currentUser;
+
+                  if (user != null) {
+                    final mountData = {
+                      'name': 'Mount Nuang',
+                      'distance': '17.9 KM',
+                      'description': 'Bukit Sungai Putih Forest Reserve',
+                      'images': [
+                        'assets/nuang/nuang1.png',
+                        'assets/nuang/nuang2.jpeg',
+                        'assets/nuang/nuang3.jpg',
+                      ],
+                      'userId': user.uid,
+                    };
+
+                    try {
+                      if (isSaved) {
+                        // Unsaving the mount
+                        if (savedDocumentId != null) {
+                          await FirebaseFirestore.instance
+                              .collection('saved_mounts')
+                              .doc(savedDocumentId)
+                              .delete();
+
+                          setState(() {
+                            isSaved = false;
+                            savedDocumentId = null;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Mount unsaved successfully!')),
+                          );
+                        }
+                      } else {
+                        // Saving the mount
+                        final docRef = await FirebaseFirestore.instance
+                            .collection('saved_mounts')
+                            .add(mountData);
+
+                        setState(() {
+                          isSaved = true;
+                          savedDocumentId = docRef.id;
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Mount Nuang saved successfully!')),
+                        );
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Operation failed: $e')),
+                      );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Please log in to save this mount.')),
+                    );
+                  }
                 },
               ),
             ),

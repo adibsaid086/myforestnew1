@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myforestnew/Pages/profile.dart';
+import 'package:intl/intl.dart';
+
 
 class permitStatus extends StatelessWidget {
   @override
@@ -116,11 +118,17 @@ class _PermitApplicationScreenState extends State<PermitApplicationScreen> {
                 onPressed: () {
                   // Implement download e-permit logic
                 },
-                child: Text('Download E-Permit'),
+                child: Text(
+                  'Download E-Permit',
+                  style: TextStyle(
+                    color: Colors.white, // Text color
+                    fontSize: 14, // Text size
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(
                       horizontal: 40, vertical: 15),
-                  backgroundColor: Colors.blueAccent,
+                  backgroundColor: Colors.blue,
                 ),
               ),
             ],
@@ -156,7 +164,7 @@ class StatusBox extends StatelessWidget {
           ),
           SizedBox(height: 10),
           Text(
-            'Date: $date',
+            'Date: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}', // Format the timestamp
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white),
           ),
