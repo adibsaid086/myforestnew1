@@ -29,12 +29,14 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
+
     sdk: flutter
   intl: ^0.19.0
   http: ^1.2.1
   url_launcher: ^6.3.1
   google_maps_flutter: ^2.2.0
   latlong2: ^0.9.1
+  google_fonts: ^5.0.0
 
 
 
@@ -46,6 +48,7 @@ dependencies:
   firebase_auth: ^5.3.1
   firebase_core: ^3.6.0
   firebase_storage: ^12.3.4
+  vibration: ^1.8.1
 
 
 
@@ -76,7 +79,6 @@ flutter:
   assets:
       - assets/mount.jpg
       - assets/getstartedbg.jpg
-      - assets/myforestlogo.jpg
       - assets/nuang/nuang1.png
       - assets/nuang/nuang2.jpeg
       - assets/nuang/nuang3.jpg
@@ -103,6 +105,7 @@ flutter:
       - assets/my.png
       - assets/profile.jpg
       - assets/fpx.png
+      - assets/myforestlogo.png
 
-      
+
 
