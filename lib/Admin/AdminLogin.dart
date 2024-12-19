@@ -51,7 +51,7 @@ class __LogininScreenState extends State<AdminLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Background color to match the design
+      backgroundColor: Color(0xFF1F1F1F), // Background color to match the design
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -60,7 +60,7 @@ class __LogininScreenState extends State<AdminLoginPage> {
             // Tree icon or logo (placeholder for now)
             Center(
               child: Image.asset(
-                'assets/myforestlogo.jpg',
+                'assets/myforestlogo.png',
                 height: 150,
               ),
             ),
