@@ -20,11 +20,6 @@ class _HitamPageState extends State<mountHitam> {
   int lowTemp = 0;
   String locationName = '';
   List<Map<String, dynamic>> hourlyForecast = [];
-  final List<String> imgList = [
-    'assets/hitam/hitam2.jpg',
-    'assets/hitam/hitam1.jpg',
-    'assets/hitam/hitam3.jpg',
-  ];
 
 
   @override
@@ -250,44 +245,39 @@ class _HitamPageState extends State<mountHitam> {
   }
 
   Widget _buildImageSlider() {
+    final List<String> imgList = [
+      'assets/hitam/hitam2.jpg',
+      'assets/hitam/hitam1.jpg',
+      'assets/hitam/hitam3.jpg',
+    ];
+
     return CarouselSlider(
       options: CarouselOptions(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * 0.40,
-        viewportFraction: 1.0,
-        enableInfiniteScroll: false,
+        height: MediaQuery.of(context).size.height * 0.40,
+        viewportFraction: 1.0, // Show one image at a time
+        enableInfiniteScroll: true, // Enable infinite looping
         enlargeCenterPage: false,
+        autoPlay: true, // Enable auto-scrolling
+        autoPlayInterval: Duration(seconds: 5), // Time between slides
+        scrollDirection: Axis.horizontal, // Allow horizontal scrolling
       ),
-      items: imgList.map((item) =>
-          GestureDetector(
-            onTap: () {
-            },
-            child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width, // Set width explicitly
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.40, // Set height explicitly
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(item),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          )).toList(),
+      items: imgList.map((item) => Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.40,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(item),
+            fit: BoxFit.cover,
+          ),
+        ),
+      )).toList(),
     );
   }
 
 
   Widget _buildRoundedContent(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(25.0),
       decoration: BoxDecoration(
         color: Colors.black, // Background color of the content section
         borderRadius: BorderRadius.only(
@@ -396,7 +386,7 @@ class _HitamPageState extends State<mountHitam> {
       child : Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.blueGrey.shade900,
+          color: Colors.grey[900],
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -560,13 +550,11 @@ class _HitamPageState extends State<mountHitam> {
     showDialog(
       context: context,
       builder: (context) {
-        String review = '';
         return AlertDialog(
           backgroundColor: Colors.black87,
           title: Text('Write a Review', style: TextStyle(color: Colors.white)),
           content: TextField(
             onChanged: (value) {
-              review = value;
             },
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(

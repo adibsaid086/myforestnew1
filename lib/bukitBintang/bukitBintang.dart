@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:myforestnew/Pages/savedpage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:myforestnew/bukitBintang/bintangLoc.dart';
@@ -21,11 +20,7 @@ class _bukitBintangPageState extends State<bukitBintang> {
   int lowTemp = 0;
   String locationName = '';
   List<Map<String, dynamic>> hourlyForecast = [];
-  final List<String> imgList = [
-    'assets/bintang/bintang1.jpg',
-    'assets/bintang/bintang2.jpg',
-    'assets/bintang/bintang3.png',
-  ];
+
 
   @override
   void initState() {
@@ -212,44 +207,39 @@ class _bukitBintangPageState extends State<bukitBintang> {
   }
 
   Widget _buildImageSlider() {
+    final List<String> imgList = [
+      'assets/ayam/ayam1.jpg',
+      'assets/ayam/ayam2.jpg',
+      'assets/ayam/ayam3.jpg',
+    ];
+
     return CarouselSlider(
       options: CarouselOptions(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * 0.40,
-        viewportFraction: 1.0,
-        enableInfiniteScroll: false,
+        height: MediaQuery.of(context).size.height * 0.40,
+        viewportFraction: 1.0, // Show one image at a time
+        enableInfiniteScroll: true, // Enable infinite looping
         enlargeCenterPage: false,
+        autoPlay: true, // Enable auto-scrolling
+        autoPlayInterval: Duration(seconds: 5), // Time between slides
+        scrollDirection: Axis.horizontal, // Allow horizontal scrolling
       ),
-      items: imgList.map((item) =>
-          GestureDetector(
-            onTap: () {
-            },
-            child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width, // Set width explicitly
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.40, // Set height explicitly
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(item),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          )).toList(),
+      items: imgList.map((item) => Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.40,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(item),
+            fit: BoxFit.cover,
+          ),
+        ),
+      )).toList(),
     );
   }
 
 
   Widget _buildRoundedContent(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(25.0),
       decoration: BoxDecoration(
         color: Colors.black, // Background color of the content section
         borderRadius: BorderRadius.only(
@@ -356,7 +346,7 @@ class _bukitBintangPageState extends State<bukitBintang> {
       child : Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.blueGrey.shade900,
+          color: Colors.grey[900],
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -520,13 +510,11 @@ class _bukitBintangPageState extends State<bukitBintang> {
     showDialog(
       context: context,
       builder: (context) {
-        String review = '';
         return AlertDialog(
           backgroundColor: Colors.black87,
           title: Text('Write a Review', style: TextStyle(color: Colors.white)),
           content: TextField(
             onChanged: (value) {
-              review = value;
             },
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
