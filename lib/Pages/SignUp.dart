@@ -14,6 +14,10 @@ class _SignupScreen extends State<SignUp> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
+  // Role selection variables
+  final List<String> _roles = ["user", "admin"]; // Available roles
+  String _selectedRole = "user"; // Default selected role
+
   @override
   void dispose() {
     super.dispose();
@@ -32,6 +36,7 @@ class _SignupScreen extends State<SignUp> {
     String res = await AuthMethods().signUpUser(
       email: _emailController.text,
       password: _passwordController.text,
+      role: _selectedRole, // Pass the selected role
     );
 
     setState(() {
@@ -40,13 +45,19 @@ class _SignupScreen extends State<SignUp> {
 
     if (res != 'success') {
       showSnackBar(res, context);
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => LoginPage(),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1F1F1F),
+      backgroundColor: const Color(0xFF1F1F1F),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -58,8 +69,8 @@ class _SignupScreen extends State<SignUp> {
                 height: 150,
               ),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'MyForest',
               style: TextStyle(
                 fontSize: 32,
@@ -67,14 +78,14 @@ class _SignupScreen extends State<SignUp> {
                 color: Colors.white,
               ),
             ),
-            Text(
+            const Text(
               'Sign Up',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.white70,
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             // Email input field with rounded corners
             TextFieldInput(
               hintText: 'Email',
@@ -91,23 +102,23 @@ class _SignupScreen extends State<SignUp> {
               borderRadius: 15.0,
               obscureText: true,
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             ElevatedButton(
               onPressed: signUpUser,
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                 backgroundColor: Colors.white,
               ),
               child: _isLoading
-                  ? SizedBox(
-                height: 20, // Adjust spinner size
-                width: 20, // Adjust spinner size
+                  ? const SizedBox(
+                height: 20,
+                width: 20,
                 child: CircularProgressIndicator(
                   color: Colors.black,
-                  strokeWidth: 2, // Thinner spinner stroke
+                  strokeWidth: 2,
                 ),
               )
                   : const Text(
@@ -115,11 +126,11 @@ class _SignupScreen extends State<SignUp> {
                 style: TextStyle(fontSize: 12, color: Colors.black),
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Already have an account?",
                   style: TextStyle(color: Colors.white70),
                 ),
@@ -131,7 +142,7 @@ class _SignupScreen extends State<SignUp> {
                       ),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'Log In',
                     style: TextStyle(color: Colors.lightBlueAccent),
                   ),
@@ -144,5 +155,3 @@ class _SignupScreen extends State<SignUp> {
     );
   }
 }
-
-

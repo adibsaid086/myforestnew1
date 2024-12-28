@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:myforestnew/Admin/permitAdmin.dart';
+import 'package:myforestnew/Pages/navigation.dart';
 import 'package:myforestnew/permit/Permit.dart';
 import 'package:myforestnew/Pages/profile.dart';
 import 'package:myforestnew/Pages/savedpage.dart';
@@ -12,8 +12,6 @@ import 'package:myforestnew/mountHItam/mountHitam.dart';
 import 'package:myforestnew/mountnuang/mountnuang.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -178,12 +176,11 @@ class _HomePageState extends State<HomePage> {
             color: isSelected ? Color(0xFFFFFFFF) : Color(0xFFB0B0B0),
             size: 30,
           ),
-          if (isSelected)
             Text(
                 label,
                 style: TextStyle(
                   color: Color(0xFFFFFFFF),
-                  fontSize: 10,
+                  fontSize: 7,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -244,7 +241,7 @@ class _HomePageState extends State<HomePage> {
             physics: NeverScrollableScrollPhysics(),
             children: [
               Permit(),
-              PermitAdmin(),
+              Navigation(),
               SavedPage(),
               ProfilePage(),
               SingleChildScrollView(
@@ -461,7 +458,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   _buildNavItem(
                     icon: Icons.navigation,
-                    label: 'Admin',
+                    label: 'Navigation',
                     isSelected: _currentIndex == 1,
                     index: 1,
                   ),

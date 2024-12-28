@@ -35,7 +35,13 @@ dependencies:
   http: ^1.2.1
   url_launcher: ^6.3.1
   google_maps_flutter: ^2.2.0
+  flutter_map: ^7.0.2
+  location: ^7.0.1
   latlong2: ^0.9.1
+  flutter_map_location_marker: ^9.1.1
+  gpx: ^2.2.2
+  xml: ^6.5.0
+  fl_chart: ^0.69.2
   google_fonts: ^5.0.0
 
 
@@ -105,6 +111,13 @@ flutter:
       - assets/my.png
       - assets/profile.jpg
       - assets/fpx.png
+      - assets/gpxFile/pau.xml
+      - assets/gpxFile/nuang.xml
+      - assets/gpxFile/hitam.xml
+      - assets/gpxFile/ayam.xml
+      - assets/gpxFile/lagong.xml
+      - assets/gpxFile/sriBintang.xml
+      - assets/gpxFile/lagong2.xml
       - assets/myforestlogo.png
 
 
