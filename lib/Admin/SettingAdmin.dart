@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:myforestnew/Admin/profileadmin.dart';
+import 'package:myforestnew/Pages/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingAdmin extends StatefulWidget {
@@ -29,7 +29,6 @@ class _SettingState extends State<SettingAdmin> {
 
   Future<void> savePersonalInfo() async {
     try {
-
       // Now get the current user
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -39,6 +38,7 @@ class _SettingState extends State<SettingAdmin> {
 
       String userId = user.uid;
 
+      // Save personal information
       await FirebaseFirestore.instance.collection('profile').doc(userId).set({
         'first_name': firstNameController.text,
         'last_name': lastNameController.text,
@@ -50,8 +50,30 @@ class _SettingState extends State<SettingAdmin> {
         'updated_at': Timestamp.now(),
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Personal information saved successfully!')),
+      // Show the confirmation dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Color(0xFF2C2C2C),
+            title: Text(
+              'Profile Updated',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: Text(
+              'Your profile has been successfully updated.',
+              style: TextStyle(color: Colors.white70),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK', style: TextStyle(color: Colors.white)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
       );
 
       // Clear the input fields
@@ -73,6 +95,7 @@ class _SettingState extends State<SettingAdmin> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +108,7 @@ class _SettingState extends State<SettingAdmin> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePageAdmin()),
+              MaterialPageRoute(builder: (context) => ProfilePage()),
             );
           },
         ),

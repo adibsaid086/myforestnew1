@@ -94,6 +94,41 @@ class _HomePageState extends State<HomePage> {
       'isSaved': false,
     },
   ];
+
+  String userName = '';
+  Future<void> fetchUserProfile() async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
+            .collection('profile')
+            .doc(user.uid)
+            .get();
+
+        if (profileSnapshot.exists) {
+          final profileData = profileSnapshot.data() as Map<String, dynamic>;
+
+          setState(() {
+            userName = "${profileData['first_name']} ${profileData['last_name']}";
+          });
+        } else {
+          print("Profile document does not exist for user: ${user.uid}");
+          setState(() {
+            userName = "User";
+          });
+        }
+      } else {
+        print("No user logged in");
+      }
+    } catch (e) {
+      print("Error fetching profile data: $e");
+      setState(() {
+        userName = "Error";
+      });
+    }
+  }
+
+
   bool isSaved = false;
   String? savedDocumentId;
   Stream<List<String>> _getSavedMountainsStream() {
@@ -117,6 +152,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    fetchUserProfile();
     _currentImageIndex = List.filled(mountains.length, 0);
     _filteredMountains = mountains;
     _searchController.addListener(_filterMountains);
@@ -255,7 +291,7 @@ class _HomePageState extends State<HomePage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Text(
-                                'Hello, Adib said',
+                                'Hello, $userName',
                                 style: TextStyle(color: Colors.white, fontSize: 20),
                               ),
                             ),

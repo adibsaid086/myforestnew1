@@ -43,6 +43,9 @@ dependencies:
   xml: ^6.5.0
   fl_chart: ^0.69.2
   google_fonts: ^5.0.0
+  pdf: ^3.11.1
+  path_provider: ^2.0.11
+  printing: ^5.13.4
 
 
 
