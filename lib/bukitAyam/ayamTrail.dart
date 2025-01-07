@@ -236,19 +236,6 @@ class _AyamTrailScreen extends State<AyamTrail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          "Bukit Guling Ayam",
-          style: TextStyle(fontSize: 20, color: Colors.black),
-        ),
-        backgroundColor: Colors.white,
-      ),
       body: Stack(
         children: [
           _gpxRoute.isEmpty
@@ -291,6 +278,21 @@ class _AyamTrailScreen extends State<AyamTrail> {
                   ],
                 ),
             ],
+          ),
+          Positioned(
+              top: 40.0,
+              left: 16.0,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                    size: 24.0,
+                  ),
+                ),
+              ),
           ),
 
           Align(
